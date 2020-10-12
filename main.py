@@ -2,7 +2,8 @@ import requests
 import json
 from pprint import pprint
 
-def get_vlille():
+def get_data(ville):
+
     url = "https://opendata.lillemetropole.fr/api/records/1.0/search/?dataset=vlille-realtime&q=&rows=300&facet=libelle&facet=nom&facet=commune&facet=etat&facet=type&facet=etatconnexion"
 
     payload = {}
@@ -14,7 +15,7 @@ def get_vlille():
 
     return response_json.get("records", [])
 
-vlilles = get_vlille()
+vlilles = get_data("lille")
 
-for vlille in vlilles:
+for vlille in vlilles.find({"commune":"LILLE"}):
     pprint(vlille)
