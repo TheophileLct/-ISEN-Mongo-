@@ -35,7 +35,6 @@ def get_self_service(ville=["Lille", "Lyon", "Paris", "Rennes"], live_data=False
             list_stations.append(vlilles_to_insert)
             collec.insert_many(vlilles_to_insert)
     if "Lyon" in ville:
-        #key = "6447f398d41c4eb8e8dad3646290848a8b90a5da"
         url = "https://api.jcdecaux.com/vls/v3/stations?contract=Lyon&apiKey=6447f398d41c4eb8e8dad3646290848a8b90a5da"
         payload = {}
         headers = {}
