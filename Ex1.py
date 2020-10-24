@@ -30,6 +30,7 @@ def get_self_service(ville=["Lille", "Lyon", "Paris", "Rennes"], live_data=False
                         'id_ext': elem.get('fields', {}).get('libelle')
                     },
                     'tpe': elem.get('fields', {}).get('type', '') == 'AVEC TPE'
+                    ,'active' : True 
                 }
             ]
             list_stations.append(vlilles_to_insert)
@@ -51,6 +52,7 @@ def get_self_service(ville=["Lille", "Lyon", "Paris", "Rennes"], live_data=False
                         'id_ext': elem.get('number')
                     },
                     'tpe': elem.get('banking', '') == 'AVEC TPE'
+                    ,'active' : True 
                 }
             ]
             list_stations.append(velov_to_insert)
@@ -73,6 +75,7 @@ def get_self_service(ville=["Lille", "Lyon", "Paris", "Rennes"], live_data=False
                         'id_ext': elem.get('fields', {}).get('stationcode')
                     },
                     'tpe': True if elem.get('fields', {}).get('is_renting') == 'OUI' else False,
+                    'active' : True 
                 }
             ]
             list_stations.append(velib_to_insert)
@@ -95,6 +98,7 @@ def get_self_service(ville=["Lille", "Lyon", "Paris", "Rennes"], live_data=False
                         'id_ext': elem.get('fields', {}).get('idstation')
                     },
                     'tpe': 'unknown'
+                    ,'active' : True 
                 }
             ]
             list_stations.append(vstar_to_insert)

@@ -47,4 +47,4 @@ def give_ration(ratio):
 	places=int(maxplaces*maxplaces/100)
 	for station in collec.find({"size": { "$lt": places}}):
 		pprint(station)
-#give_ration(20)
+give_ration(20)
