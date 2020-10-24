@@ -19,7 +19,13 @@ def recherche(txt):
 
 #recherche("Planetes")
 ##update
+def update_station(nom,new_name,new_size):
+	mystation={"name":nom}
+	newstation={"$set":{"name":new_name,"size":new_size}}
+	collec.update_one(mystation,newstation)
 
+#update_station("Opera","Billy",100)
+#recherche("Billy")
 
 #delete station
 #ne marche pas ??
@@ -41,4 +47,4 @@ def give_ration(ratio):
 	places=int(maxplaces*maxplaces/100)
 	for station in collec.find({"size": { "$lt": places}}):
 		pprint(station)
-give_ration(20)
+#give_ration(20)
