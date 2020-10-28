@@ -4,47 +4,78 @@ import pymongo
 from pprint import pprint
 from pymongo import MongoClient
 from pymongo import TEXT
+from bson.objectid import ObjectId
 
 atlas = MongoClient(
     'mongodb+srv://dbUser:isen123@cluster0.cndhu.mongodb.net/bicycle?retryWrites=true&w=majority')
 bdd = atlas.get_database('bicycle')
 collec = bdd.stations
 
-#get with letters in name
-
+# -----------------------------------------------------
+# Trouver une station avec un nom.
 collec.create_index([("name", TEXT)])
+
+
 def recherche(txt):
-	for station in collec.find({"$text": {"$search": txt,"$caseSensitive":False}}):
-		pprint(station)
+    for station in collec.find({"$text": {"$search": txt, "$caseSensitive": False}}):
+        pprint(station)
 
-#recherche("Planetes")
-##update
-def update_station(nom,new_name,new_size):
-	mystation={"name":nom}
-	newstation={"$set":{"name":new_name,"size":new_size}}
-	collec.update_one(mystation,newstation)
 
-#update_station("Opera","Billy",100)
-#recherche("Billy")
+# Test de notre fonction recherche
+recherche("Planetes")
 
-#delete station
-#ne marche pas ??
+# -----------------------------------------------------
+# update une station
 
-def remove_station(nom):
-	collec.deleteMany({"name":nom})
-#remove_station("Planetes")
-#recherche("Planetes")
-#deactivate
 
-#give ratio
+def update_name_station(id, newName):
+    collec.update(
+        {"_id": id},
+        {"$set": {'name': newName}})
 
-'''c est un programe un peu nul, il part du principe que 
-les stations font toute 20 places et cherche les sizes plus petites
-que 20 * ratio /100 
- c est le bon query mais faudra changer la bdd pour reelement faire l'exo'''
+
+# -----------------------------------------------------
+# supprimer une station
+def remove_station(id):
+    collec.delete_one(
+        {"_id": id}
+    )
+
+
+# remove_station("Planetes")
+
+# -----------------------------------------------------
+# Désactiver les stations dans un carré choisi
+
+
+def update_station_activity_by_zone(x0, x1, x2, x3, state):
+    collec.update_many(
+        {"geometry": {
+            "$geoWithin":
+                {
+                    "$polygon": [[x0[0], x0[1]], [x1[0], x1[1]], [x2[0], x2[1]], [x3[0], x3[1]]]
+                }
+        }
+        },
+        {"$set": {"active": state}})
+
+
+# Lors de la création de la BDD nous n'avions pas mis l'activité donc nous le faisons maintenant.
+def update_boolean_active_station():
+    {
+        collec.update_many(
+            {},
+            {"$set": {"active": True}}, upsert=False, array_filters=None)
+    }
+
+
+# ----------------------------------------------------------------
+# Donne le nombre de station avec un nombre total sous
 def give_ration(ratio):
-	maxplaces=20
-	places=int(maxplaces*maxplaces/100)
-	for station in collec.find({"size": { "$lt": places}}):
-		pprint(station)
+    maxplaces = 20
+    places = int(maxplaces*maxplaces/100)
+    for station in collec.find({"size": {"$lt": places}}):
+        pprint(station)
+
+
 give_ration(20)
