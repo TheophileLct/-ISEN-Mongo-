@@ -22,10 +22,11 @@ def recherche(txt):
 
 
 # Test de notre fonction recherche
-recherche("Planetes")
+# recherche("Planetes")
 
 # -----------------------------------------------------
-# update une station
+# update une station, on la fait pour le nom ici, mais il
+#  est possible de mettre à jour ce que l'on souhaite.
 
 
 def update_name_station(id, newName):
@@ -36,13 +37,14 @@ def update_name_station(id, newName):
 
 # -----------------------------------------------------
 # supprimer une station
+
 def remove_station(id):
     collec.delete_one(
         {"_id": id}
     )
 
 
-# remove_station("Planetes")
+# remove_station('ObjectId("5f8c5e6d25a39a05160ef561")')
 
 # -----------------------------------------------------
 # Désactiver les stations dans un carré choisi
@@ -68,9 +70,25 @@ def update_boolean_active_station():
             {"$set": {"active": True}}, upsert=False, array_filters=None)
     }
 
+# On la déja exécuter pour mettre à jour toute la bdd une fois
+# update_boolean_active_station()
+
+
+# Coordonnées autyour de la station "Theatre sébastopol"
+x0 = [3.058289, 50.629045]
+x1 = [3.058287, 50.629043]
+x2 = [3.058299, 50.629055]
+x3 = [3.028279, 50.629035]
+# A executer pour mettre faux
+#update_station_activity_by_zone(x0, x1, x2, x3, False)
+
+# A reexécuter pour mettre True
+#update_station_activity_by_zone(x0, x1, x2, x3, True)
 
 # ----------------------------------------------------------------
 # Donne le nombre de station avec un nombre total sous
+
+
 def give_ration(ratio):
     maxplaces = 20
     places = int(maxplaces*maxplaces/100)
@@ -78,4 +96,4 @@ def give_ration(ratio):
         pprint(station)
 
 
-give_ration(20)
+# give_ration(20)
