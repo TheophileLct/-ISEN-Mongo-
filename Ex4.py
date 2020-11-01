@@ -71,7 +71,7 @@ def update_boolean_active_station():
 
 
 # On la déja exécuter pour mettre à jour toute la bdd une fois
-update_boolean_active_station()
+# update_boolean_active_station()
 
 
 # Coordonnées autyour de la station "Theatre sébastopol"
