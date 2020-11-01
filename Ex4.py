@@ -5,6 +5,8 @@ from pprint import pprint
 from pymongo import MongoClient
 from pymongo import TEXT
 from bson.objectid import ObjectId
+import time
+import dateutil.parser
 
 atlas = MongoClient(
     'mongodb+srv://dbUser:isen123@cluster0.cndhu.mongodb.net/bicycle?retryWrites=true&w=majority')
@@ -25,14 +27,11 @@ def recherche(txt):
 # recherche("Planetes")
 
 # -----------------------------------------------------
-# update une station, on la fait pour le nom ici, mais il
-#  est possible de mettre à jour ce que l'on souhaite.
+# update une station avec le champ que l'on souhaite.
 
 
-def update_name_station(id, newName):
-    collec.update(
-        {"_id": id},
-        {"$set": {'name': newName}})
+def update_station(id, champ, valeur):
+    collec.update_one({"_id": id}, {"$set": {champ: valeur}})
 
 
 # -----------------------------------------------------
@@ -70,8 +69,9 @@ def update_boolean_active_station():
             {"$set": {"active": True}}, upsert=False, array_filters=None)
     }
 
+
 # On la déja exécuter pour mettre à jour toute la bdd une fois
-# update_boolean_active_station()
+update_boolean_active_station()
 
 
 # Coordonnées autyour de la station "Theatre sébastopol"
@@ -80,20 +80,40 @@ x1 = [3.058287, 50.629043]
 x2 = [3.058299, 50.629055]
 x3 = [3.028279, 50.629035]
 # A executer pour mettre faux
-#update_station_activity_by_zone(x0, x1, x2, x3, False)
+# update_station_activity_by_zone(x0, x1, x2, x3, False)
 
 # A reexécuter pour mettre True
-#update_station_activity_by_zone(x0, x1, x2, x3, True)
+# update_station_activity_by_zone(x0, x1, x2, x3, True)
 
 # ----------------------------------------------------------------
-# Donne le nombre de station avec un nombre total sous
+# Question ratio
 
 
-def give_ration(ratio):
-    maxplaces = 20
-    places = int(maxplaces*maxplaces/100)
-    for station in collec.find({"size": {"$lt": places}}):
-        pprint(station)
+def give_ratio(ratio):
+    collec.aggregate([
+        {
+            '$group': {
+                "_id": {"_id": "$station_id"},
+                "total_datas": {'$sum': 1},
+                "last_hours": {'$max': "18:00"},
+                "first_hours": {'$min': "19:00"}
+            },
+            '$lookup': {
+                'from': 'test',
+                'localField': "_id",
+                'foreignField': "station_id",
+                'as': "station"
+            },
+            '$match': {
+                'ratio': {'$lte': ratio}
+            },
+            "$project": {
+                "name": '$name',
+                "size": [{'$sum': ['$bike_availbale', '$stand_availbale']}],
+                "ratio":{'$divide': ['$bike_availbale', {'$sum': ['$bike_availbale', '$stand_availbale']}]},
+            },
+        }
+    ])
 
 
-# give_ration(20)
+# give_ratio(0.2)
